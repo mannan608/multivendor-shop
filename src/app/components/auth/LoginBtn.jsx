@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const LoginButton = () => {
     const pathname = usePathname();
-    const isTrue = pathname === "/login";
+    const isTrue = pathname === "/auth/login";
 
     return (
         <>
@@ -13,7 +13,7 @@ const LoginButton = () => {
                 ""
             ) : (
                 <Link
-                    href="/login"
+                    href="/auth/login"
                     scroll={false}
                     className="block px-4 py-1 text-white bg-primary-500 hover:bg-primary-600 rounded font-medium text-base"
                 >
