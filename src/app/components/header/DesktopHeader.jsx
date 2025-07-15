@@ -43,7 +43,6 @@ const DesktopHeader = () => {
                 </div>
             </header>
 
-
             <nav className="bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] text-neutral-900 relative hidden md:block">
                 <div className="container mx-auto flex items-center justify-between py-4 px-5 relative">
                     <div className="flex justify-between items-center gap-2 divide-x-1 divide-gray-200">
