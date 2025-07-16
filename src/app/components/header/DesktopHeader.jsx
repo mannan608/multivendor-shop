@@ -9,7 +9,7 @@ const DesktopHeader = () => {
     return (
         <>
             <header className="bg-[#0f172a]">
-                <div className="container mx-auto px-5 py-4 flex items-center justify-between gap-4">
+                <div className="container-fluid mx-auto px-5 py-4 flex items-center justify-between gap-4">
                     <Link href="/" className="flex items-center gap-2">
                         <div className="hidden sm:block">
                             <div className="relative w-[120px] h-[40px]">
@@ -44,7 +44,7 @@ const DesktopHeader = () => {
             </header>
 
             <nav className="bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] text-neutral-900 relative hidden md:block">
-                <div className="container mx-auto flex items-center justify-between py-4 px-5 relative">
+                <div className="container-fluid mx-auto flex items-center justify-between py-4 px-5 relative">
                     <div className="flex justify-between items-center gap-2 divide-x-1 divide-gray-200">
                         <Categories />
                         <div className="hidden xl:flex items-center justify-around gap-5 pl-2 menu-link">

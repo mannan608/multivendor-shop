@@ -4,8 +4,8 @@ import ProductCard from '@/app/components/products/ProductCard';
 const Product = () => {
 
     return (
-        <div className=" min-h-screen ">
-            <div className='container mx-auto flex'>
+        <div className=" min-h-screen mt-[50px] md:mt-3 ">
+            <div className='container-fluid mx-auto flex'>
                 {/* Sidebar */}
                 <aside className="w-64 bg-white rounded p-4 hidden lg:block">
                     <h2 className="text-xl font-semibold mb-4">Categories</h2>

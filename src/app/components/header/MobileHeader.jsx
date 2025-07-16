@@ -8,10 +8,10 @@ const MobileHeader = () => {
     return (
         <>
             <div
-                className={`fixed top-0 left-0 w-full z-50 bg-white shadow-[0px_2px_4px_-4px_#0F1C330A] py-4 px-4 transition-all duration-500 ease-in-out transform  flex items-center justify-between`}
+                className={`fixed top-0 left-0 w-full z-50 bg-white shadow-[0px_2px_4px_-4px_#0F1C330A] py-3 md:py-4 px-4 transition-all duration-500 ease-in-out transform  flex items-center justify-between`}
             >
                 <Link href="/" className="flex items-center gap-1">
-                    <Image src={backBtn} alt="back btn" />
+                    <Image src={backBtn} alt="back btn" className='w-8 h-8' />
                     <h1 className="text-base font-medium">Back</h1>
                 </Link>
 

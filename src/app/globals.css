@@ -5,6 +5,10 @@ body {
   background: #f1f5f9;
 }
 
+.container-fluid {
+  width: 1280px;
+}
+
 @theme {
 
   --color-primary-50: #e6f8f4;
@@ -132,5 +136,13 @@ body {
 
   &:hover::after {
     left: 0;
+  }
+}
+
+@media (max-width: 1280px) {
+  .container-fluid {
+    width: 100% !important;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }

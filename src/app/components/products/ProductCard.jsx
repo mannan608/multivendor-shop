@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import React from 'react'
-import QuickViewBtn from './QuickViewBtn';
 
 const ProductCard = () => {
     const isFlashSale = true;
@@ -25,11 +23,9 @@ const ProductCard = () => {
                         Save 500
                     </span>
                 )}
-
-                {/* 👇 Only visible on hover */}
-                <span className="hidden group-hover:flex absolute right-2 top-2 bg-green-500 text-white px-2 py-1 text-xs rounded-r-[4px]">
+                {/* <span className="hidden group-hover:flex absolute right-2 top-2 bg-green-500 text-white px-2 py-1 text-xs rounded-r-[4px]">
                     <QuickViewBtn id={id} />
-                </span>
+                </span> */}
             </div>
 
             <div className="mt-2 px-3">
