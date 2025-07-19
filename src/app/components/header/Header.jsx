@@ -8,12 +8,6 @@ const Header = () => {
             <div className='sticky top-0 z-50' >
                 <ShowHeader />
             </div>
-            <div>
-                Category menu
-            </div>
-
-            {/* mobile header */}
-
             <div className='mobile_menu'>
                 <BottomNavMenu />
             </div>

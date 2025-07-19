@@ -1,10 +1,18 @@
-import Link from "next/link";
+import { getProducts } from "./api/productsApi/productsApi";
+import Hero from "./components/Home/Hero";
 
-export default function Home() {
+
+export default async function Home() {
+
+  const products = await getProducts();
   return (
     <>
       <div className="min-h-screen">
-        home
+        <div className="container-fluid mx-auto">
+          <section className="">
+            <Hero />
+          </section>
+        </div>
       </div>
     </>
   );
