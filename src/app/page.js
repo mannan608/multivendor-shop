@@ -8,7 +8,7 @@ export default async function Home() {
   return (
     <>
       <div className="min-h-screen">
-        <div className="container-fluid mx-auto">
+        <div className="container-fluid mx-auto px-5">
           <section className="">
             <Hero />
           </section>

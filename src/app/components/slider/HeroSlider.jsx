@@ -14,7 +14,7 @@ const HeroSlider = ({ heroSliders }) => {
     }, []);
 
     return (
-        <div >
+        <div>
             <Swiper
                 spaceBetween={0}
                 slidesPerView={1}

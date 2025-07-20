@@ -11,13 +11,13 @@ const Hero = async () => {
     return (
         <div className="flex  gap-4 mt-4">
             {/* Left: Takes remaining space */}
-            <div className="">
+            <div className="w-3/4">
                 <HeroSlider heroSliders={heroSliders} />
             </div>
 
             {/* Right: Fixed width (250px) */}
-            <div className="hidden lg:block lg:w-[250px] bg-white rounded-sm px-4 py-4 shadow-sm">
-                <h2 className="text-base font-semibold pb-2 text-center">
+            <div className="hidden lg:flex lg:w-1/4 bg-white rounded-sm px-4 py-4 shadow-sm items-center justify-center flex-col ">
+                <h2 className="text-base font-medium pb-2 text-center">
                     Download the App now!
                 </h2>
 
@@ -58,8 +58,8 @@ const Hero = async () => {
                         />
                     </div>
                     <div className="text-sm leading-tight">
-                        <p className="text-gray-700">Scan the</p>
-                        <h2 className="text-[18px] font-extrabold leading-5 text-primary">
+                        <p className="text-neutral-700 mb-1">Scan the</p>
+                        <h2 className="text-[18px] font-medium leading-5 text-primary">
                             QR CODE NOW
                         </h2>
                     </div>
