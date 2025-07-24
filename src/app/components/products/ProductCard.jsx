@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
-const ProductCard = () => {
+const ProductCard = ({ product }) => {
     const isFlashSale = true;
-    const id = 3;
+    const slug = product.slug;
     return (
         <Link
-            href={`/product/${id}`}
+            href={`/product/${slug}`}
             className="group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 ease-in-out"
         >
             <div className="relative">

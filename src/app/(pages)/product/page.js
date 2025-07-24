@@ -1,7 +1,12 @@
 
+import { getProducts } from '@/app/api/productsApi/productsApi';
 import ProductCard from '@/app/components/products/ProductCard';
 
-const Product = () => {
+const Product = async () => {
+
+    const products = await getProducts();
+
+    console.log("products", products)
 
     return (
         <div className=" min-h-screen mt-[50px] md:mt-3 ">
@@ -60,8 +65,8 @@ const Product = () => {
 
                     {/* Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {[...Array(12)].map((_, index) => (
-                            <ProductCard key={index} />
+                        {products?.map((product) => (
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 </main>
