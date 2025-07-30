@@ -7,7 +7,6 @@ import { getBanners } from '@/app/api/bannarApi/bannarApi'
 const Hero = async () => {
     const banners = await getBanners();
     const heroSliders = banners["Hero Section"];
-    console.log("heroSliders", heroSliders)
     return (
         <div className="flex  gap-4 mt-4">
             {/* Left: Takes remaining space */}

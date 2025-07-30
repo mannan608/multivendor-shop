@@ -139,6 +139,14 @@ body {
   }
 }
 
+ul {
+  list-style: none;
+}
+
+li {
+  list-style: none;
+}
+
 @media (max-width: 1280px) {
   .container-fluid {
     width: 100% !important;

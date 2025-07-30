@@ -15,7 +15,7 @@ export const getProducts = async () => {
         const data = await res.json();
         return data.data;
     } catch (error) {
-        console.error("getProducts error:", error);
+        console.error("Get products error:", error);
         return [];
     }
 };
@@ -35,7 +35,29 @@ export const getSingleProduct = async (slug) => {
         const data = await res.json();
         return data.data;
     } catch (error) {
-        console.error("getSingleProduct error:", error);
+        console.error("Get single product error:", error);
+        return null;
+    }
+};
+
+//get single product base on slug
+export const getProductReviews = async (slug) => {
+    try {
+        const res = await fetch(`${BASE_URL}/product/${slug}/reviews`, {
+            cache: "no-store",
+            next: { revalidate: 0 },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        console.log("Review response", data);
+        return data.data;
+    } catch (error) {
+        console.error("Get single product error:", error);
         return null;
     }
 };

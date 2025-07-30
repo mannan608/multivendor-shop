@@ -6,8 +6,6 @@ const Product = async () => {
 
     const products = await getProducts();
 
-    console.log("products", products)
-
     return (
         <div className=" min-h-screen mt-[50px] md:mt-3 ">
             <div className='container-fluid mx-auto flex'>
