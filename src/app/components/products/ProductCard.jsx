@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
         product.discount_price);
     return (
         <Link
-            href={`/product/${product.slug}`}
+            href={`/products/${product.slug}`}
             className="group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 ease-in-out"
         >
             <div className="relative">

@@ -1,10 +1,12 @@
 
 import { getProducts } from '@/app/api/productsApi/productsApi';
 import ProductCard from '@/app/components/products/ProductCard';
+import Link from 'next/link';
 
-const Product = async () => {
-
-    const products = await getProducts();
+const Products = async ({ searchParams }) => {
+    const currentPage = parseInt(searchParams?.page || '1', 10);
+    const response = await getProducts(currentPage);
+    const products = response.products;
 
     return (
         <div className=" min-h-screen mt-[50px] md:mt-3 ">
@@ -67,6 +69,17 @@ const Product = async () => {
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
+                    {/* Pagination */}
+                    {currentPage < response.lastPage && (
+                        <div className="col-span-full flex justify-center mt-6">
+                            <Link
+                                href={`/products?page=${currentPage + 1}`}
+                                className="px-6 py-2 bg-primary text-neutral-900 rounded "
+                            >
+                                Load More
+                            </Link>
+                        </div>
+                    )}
                 </main>
             </div>
 
@@ -74,4 +87,4 @@ const Product = async () => {
     );
 };
 
-export default Product;
+export default Products;
