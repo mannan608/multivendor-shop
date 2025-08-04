@@ -1,5 +1,5 @@
-import { getSingleProduct } from "@/app/api/productsApi/productsApi";
-import { getShopDetails } from "@/app/api/shopApi/shopApi";
+import { getSingleProduct } from "@/app/ssrApi/productApi/productApi";
+import { getShopDetails } from "@/app/ssrApi/shopApi/shopApi";
 import DelExpress from "@/app/components/icons/DelExpress";
 import DelRegular from "@/app/components/icons/DelRegular";
 import ProductDetails from "@/app/components/products/ProductDetails";

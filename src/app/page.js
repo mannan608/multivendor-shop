@@ -1,4 +1,4 @@
-import { getProducts } from "./api/productsApi/productsApi";
+import { getProducts } from "./ssrApi/productApi/productApi";
 import Hero from "./components/Home/Hero";
 
 

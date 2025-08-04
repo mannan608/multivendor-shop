@@ -2,7 +2,7 @@ import React from 'react'
 import HeroSlider from '../slider/HeroSlider'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getBanners } from '@/app/api/bannarApi/bannarApi'
+import { getBanners } from '@/app/ssrApi/bannarApi/bannarApi'
 
 const Hero = async () => {
     const banners = await getBanners();

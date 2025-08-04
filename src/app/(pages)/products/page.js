@@ -1,55 +1,43 @@
 
-import { getProducts } from '@/app/api/productsApi/productsApi';
+"use client";
 import ProductCard from '@/app/components/products/ProductCard';
-import Link from 'next/link';
+import Brands from '@/app/components/search_filter/Brands';
+import Categories from '@/app/components/search_filter/Categories';
+import PriceRange from '@/app/components/search_filter/PriceRange';
+import Ratings from '@/app/components/search_filter/Ratings';
+import { useGetProductsQuery } from '@/redux/api/products/productsApi';
+import { useEffect, useState } from 'react';
 
-const Products = async ({ searchParams }) => {
-    const currentPage = parseInt(searchParams?.page || '1', 10);
-    const response = await getProducts(currentPage);
-    const products = response.products;
+const Products = () => {
+    const [page, setPage] = useState(1);
+    const [allProducts, setAllProducts] = useState([]);
+
+    const { data, isLoading, isFetching, isError, error } = useGetProductsQuery(page);
+    useEffect(() => {
+        if (data?.products) {
+            setAllProducts((prev) => [...prev, ...data.products]);
+        }
+    }, [data]);
+
+    const handleLoadMore = () => {
+        if (data?.currentPage < data?.lastPage) {
+            setPage((prev) => prev + 1);
+        }
+    };
+
+    if (isError) {
+        return <p className="text-red-500">Error: {error?.data?.message || 'Something went wrong'}</p>;
+    }
 
     return (
-        <div className=" min-h-screen mt-[50px] md:mt-3 ">
+        <div className=" min-h-screen my-12  md:mt-4 ">
             <div className='container-fluid mx-auto flex'>
                 {/* Sidebar */}
-                <aside className="w-64 bg-white rounded p-4 hidden lg:block">
-                    <h2 className="text-xl font-semibold mb-4">Categories</h2>
-                    <ul className="space-y-2 text-gray-700">
-                        <li>Cups, Mugs & Saucers</li>
-                        <li className="text-blue-500 font-semibold">Cookware Sets</li>
-                        <li>Teapots & Coffee Servers</li>
-                        <li>Everyday Glassware</li>
-                        <li>Playsets - Kitchen Toys</li>
-                        <li>Drink Bottles</li>
-                        <li>Baby Cups</li>
-                    </ul>
-
-                    <div className="mt-6">
-                        <h2 className="text-xl font-semibold mb-2">Price range</h2>
-                        <input type="range" min={0} max={5000} className="w-full" />
-                    </div>
-
-                    <div className="mt-6">
-                        <h2 className="text-xl font-semibold mb-2">Ratings</h2>
-                        <ul className="space-y-1">
-                            {[5, 4, 3, 2, 1].map(star => (
-                                <li key={star}>
-                                    {'★'.repeat(star)}{'☆'.repeat(5 - star)}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="mt-6">
-                        <h2 className="text-xl font-semibold mb-2">Brands</h2>
-                        <ul className="space-y-2">
-                            <li><input type="checkbox" /> Hitachi</li>
-                            <li><input type="checkbox" /> Walton</li>
-                            <li><input type="checkbox" /> Marcel</li>
-                            <li><input type="checkbox" /> Samsung</li>
-                            <li><input type="checkbox" /> Whirlpool</li>
-                        </ul>
-                    </div>
+                <aside className="w-64 h-fit bg-white rounded p-4 hidden lg:block">
+                    <Categories />
+                    <Brands />
+                    <PriceRange />
+                    <Ratings />
                 </aside>
 
                 {/* Product Listing */}
@@ -65,19 +53,20 @@ const Products = async ({ searchParams }) => {
 
                     {/* Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {products?.map((product) => (
+                        {allProducts?.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
-                    {/* Pagination */}
-                    {currentPage < response.lastPage && (
-                        <div className="col-span-full flex justify-center mt-6">
-                            <Link
-                                href={`/products?page=${currentPage + 1}`}
-                                className="px-6 py-2 bg-primary text-neutral-900 rounded "
+                    {/* Load More */}
+                    {data?.currentPage < data?.lastPage && (
+                        <div className="flex justify-center mt-6">
+                            <button
+                                onClick={handleLoadMore}
+                                disabled={isFetching}
+                                className="px-6 py-2 bg-primary-500 text-white rounded cursor-pointer "
                             >
-                                Load More
-                            </Link>
+                                {isFetching ? 'Loading...' : 'Load More'}
+                            </button>
                         </div>
                     )}
                 </main>

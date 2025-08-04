@@ -1,4 +1,4 @@
-import { getProductReviews } from '@/app/api/productsApi/productsApi';
+import { getProductReviews } from '@/app/ssrApi/productApi/productApi';
 import Image from 'next/image';
 import { TiStarFullOutline } from 'react-icons/ti';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
