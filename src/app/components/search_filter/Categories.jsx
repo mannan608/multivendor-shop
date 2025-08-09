@@ -1,18 +1,29 @@
 import React from 'react'
 
-const Categories = () => {
+const Categories = ({ categories, selected = [], onChange }) => {
+
+    const handleToggle = (category) => {
+        const updated = selected.includes(category)
+            ? selected.filter((c) => c !== category)
+            : [...selected, category];
+        onChange(updated);
+    };
+
     return (
         <>
-            <h2 className="text-xl font-semibold mb-4">Categories</h2>
-            <ul className="space-y-2 text-gray-700">
-                <li>Cups, Mugs & Saucers</li>
-                <li className="text-blue-500 font-semibold">Cookware Sets</li>
-                <li>Teapots & Coffee Servers</li>
-                <li>Everyday Glassware</li>
-                <li>Playsets - Kitchen Toys</li>
-                <li>Drink Bottles</li>
-                <li>Baby Cups</li>
-            </ul>
+            <div>
+                <h3 className="font-semibold mb-2">Categories</h3>
+                {categories?.map((cat) => (
+                    <label key={cat.id} className="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={selected.includes(cat.name)}
+                            onChange={() => handleToggle(cat.name)}
+                        />
+                        {cat.name}
+                    </label>
+                ))}
+            </div>
         </>
     )
 }
