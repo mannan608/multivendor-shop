@@ -2,12 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ProductCard from "@/app/components/products/ProductCard";
-import Brands from "@/app/components/search_filter/Brands";
-import Categories from "@/app/components/search_filter/Categories";
-import PriceRange from "@/app/components/search_filter/PriceRange";
-import Ratings from "@/app/components/search_filter/Ratings";
 import { useGetBrandsQuery, useGetCategoriesQuery } from "@/redux/api/filters/filtersApi";
 import { useGetProductsQuery } from "@/redux/api/products/productsApi";
+import SidebarFilter from "@/app/components/search_filter/SidebarFilter";
 
 const Products = () => {
     const router = useRouter();
@@ -21,9 +18,6 @@ const Products = () => {
     const filters = {
         category: searchParams.get("category_id")?.split(",") || [],
         brand: searchParams.get("brand_ids")?.split(",") || [],
-        // price_min: searchParams.get("price_min") || "",
-        // price_max: searchParams.get("price_max") || "",
-        // rating: searchParams.get("rating") || "",
     };
 
 
@@ -31,38 +25,43 @@ const Products = () => {
     const { data: categories } = useGetCategoriesQuery();
     const { data: brands } = useGetBrandsQuery();
 
-    // 🛒 Populate products list
-    useEffect(() => {
-        if (data?.products) {
-            setAllProducts((prev) => (page === 1 ? data.products : [...prev, ...data.products]));
-        }
-    }, [data]);
-
-    // 🔁 Reset page & products when filters change
     useEffect(() => {
         setPage(1);
         setAllProducts([]);
     }, [searchParams.toString()]);
 
-    // ⏫ Update URL when filter changes
+    // Append new products when page changes
+    useEffect(() => {
+        if (data?.products) {
+            setAllProducts((prev) =>
+                page === 1 ? data.products : [...prev, ...data.products]
+            );
+        }
+    }, [data]);
+
+    // Update query params in URL
     const updateFilterInURL = (key, value) => {
         const params = new URLSearchParams(searchParams.toString());
 
         if (Array.isArray(value)) {
-            if (value.length) {
-                params.set(key, value.join(","));
-            } else {
-                params.delete(key);
-            }
+            value.length ? params.set(key, value.join(",")) : params.delete(key);
         } else {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
+            value ? params.set(key, value) : params.delete(key);
         }
 
         router.push(`${pathname}?${params.toString()}`);
+    };
+
+    // Handlers
+    const handleCategoryChange = (id) => {
+        updateFilterInURL("category_id", id ? [id] : []);
+    };
+
+    const handleBrandChange = (id) => {
+        let selected = filters.brand.includes(String(id))
+            ? filters.brand.filter((b) => b !== String(id))
+            : [...filters.brand, String(id)];
+        updateFilterInURL("brand_ids", selected);
     };
 
     const handleLoadMore = () => {
@@ -71,8 +70,13 @@ const Products = () => {
         }
     };
 
+    // Error handling
     if (isError) {
-        return <p className="text-red-500">Error: {error?.data?.message || "Something went wrong"}</p>;
+        return (
+            <p className="text-red-500 p-4">
+                Error: {error?.data?.message || "Something went wrong"}
+            </p>
+        );
     }
 
     return (
@@ -80,22 +84,13 @@ const Products = () => {
             <div className="container-fluid mx-auto flex">
                 {/* Sidebar */}
                 <aside className="w-64 h-fit bg-white rounded p-4 hidden lg:block">
-                    <Categories
+                    <SidebarFilter
                         categories={categories}
-                        selected={filters.category}
-                        onChange={(val) => updateFilterInURL("category_id", val)}
-                    />
-                    <Brands
+                        filters={filters}
+                        handleCategoryChange={handleCategoryChange}
                         brands={brands}
-                        selected={filters.brand}
-                        onChange={(val) => updateFilterInURL("brand_ids", val)}
+                        handleBrandChange={handleBrandChange}
                     />
-                    {/* <PriceRange
-                        min={filters.price_min}
-                        max={filters.price_max}
-                        onChange={(key, val) => updateFilterInURL(key, val)}
-                    />
-                    <Ratings selected={filters.rating} onChange={(val) => updateFilterInURL("rating", val)} /> */}
                 </aside>
 
                 {/* Product Listing */}
@@ -109,11 +104,19 @@ const Products = () => {
                         </select>
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {allProducts?.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                    {
+                        allProducts?.length > 0 ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {allProducts?.map((product) => (
+                                    <ProductCard key={product.id} product={product} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-64">
+                                <p className="text-center">No products found</p>
+                            </div>
+                        )
+                    }
 
                     {data?.currentPage < data?.lastPage && (
                         <div className="flex justify-center mt-6">
