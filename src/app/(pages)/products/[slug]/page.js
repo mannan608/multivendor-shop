@@ -8,6 +8,7 @@ import Review from "@/app/components/reviews/Review";
 import Image from "next/image";
 import Link from "next/link";
 import { MdVerified } from "react-icons/md";
+import ProductImage from "@/app/components/products/ProductImage";
 
 const SingleProduct = async ({ params }) => {
     const { slug } = await params;
@@ -20,7 +21,19 @@ const SingleProduct = async ({ params }) => {
             <div className="container-fluid mx-auto px-5">
                 <div className="flex flex-col md:flex-row gap-6 w-full bg-white p-5">
                     <div className="product-details flex-1 flex gap-5 relative ">
-                        <ProductDetails product={product} />
+                        {/* <ProductDetails product={product} /> */}
+
+                        <div className="flex flex-col lg:flex-row gap-8 w-full">
+                            <div className="product-images flex flex-col gap-4 w-full lg:w-[380px] flex-shrink-0">
+                                <ProductImage product={product} />
+                            </div>
+                            <div className="product-info flex-1">
+                                <div className="space-y-6">
+                                    <h1 className="text-base md:text-xl font-medium">{product.name}</h1>
+                                  <ProductDetails product={product} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="vendor-info w-full md:w-[320px]">
                         <div className="flex flex-col gap-5">
@@ -121,7 +134,6 @@ const SingleProduct = async ({ params }) => {
                     </div>
                     <div className="bg-white p-4  rounded  w-1/2">
                         <ProductInformation title="Product Specification" data={product.specification} />
-
                     </div>
                 </div>
                 <div className="bg-white p-4  rounded mt-5" >

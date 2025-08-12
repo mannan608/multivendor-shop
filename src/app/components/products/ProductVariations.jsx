@@ -6,7 +6,6 @@ const ProductVariations = ({
     isOptionAvailable,
 }) => {
 
-
     return (
 
         <>

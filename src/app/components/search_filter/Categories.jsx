@@ -1,6 +1,7 @@
+import { useGetCategoriesQuery } from "@/redux/api/filters/filtersApi";
 
-const Categories = ({ categories, filters, handleCategoryChange }) => {
-
+const Categories = ({ filters, handleCategoryChange }) => {
+    const { data: categories } = useGetCategoriesQuery();
     return (
         <>
             <div>

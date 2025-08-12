@@ -31,7 +31,9 @@ export function useProductVariation(attributes, variations, initialSelected = {}
 
         return availableVariants.some(variant =>
             Object.entries(tempSelections).every(([attrName, attrVal]) =>
-                variant.variant.some(v => v.attribute_name === attrName && v.attribute_option === attrVal)
+                variant.variant.some(
+                    v => v.attribute_name === attrName && v.attribute_option === attrVal
+                )
             )
         );
     };
@@ -71,11 +73,24 @@ export function useProductVariation(attributes, variations, initialSelected = {}
         });
     }, [groupedAttributes]);
 
+    // Get selected variant
+    const selectedVariant = useMemo(() => {
+        if (!Object.keys(selectedOptions).length) return null;
+        return availableVariants.find(variant =>
+            Object.entries(selectedOptions).every(([attrName, attrVal]) =>
+                variant.variant.some(
+                    v => v.attribute_name === attrName && v.attribute_option === attrVal
+                )
+            )
+        );
+    }, [selectedOptions, availableVariants]);
+
     return {
         selectedOptions,
         setSelectedOptions,
         handleAttributeSelect,
         isOptionAvailable,
         groupedAttributes,
+        selectedVariant, // ✅ Added
     };
 }

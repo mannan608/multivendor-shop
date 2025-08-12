@@ -1,7 +1,7 @@
-import React from 'react'
+import { useGetBrandsQuery } from '@/redux/api/filters/filtersApi';
 
-const Brands = ({ brands, filters, handleBrandChange }) => {
-
+const Brands = ({ filters, handleBrandChange }) => {
+    const { data: brands } = useGetBrandsQuery();
     return (
         <>
             <div className="mt-6">
