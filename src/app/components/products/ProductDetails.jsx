@@ -1,20 +1,54 @@
 "use client";
 import { useProductVariation } from "@/hooks/useProductVariation";
 import ProductActionBtn from "./ProductActionBtn";
+import { useState } from "react";
+import Quantity from "../ui/Quantity";
 
 const ProductDetails = ({ product }) => {
+    const [quantity, setQuantity] = useState(1);
+
     const {
         selectedOptions,
         groupedAttributes,
         handleAttributeSelect,
         isOptionAvailable,
-        selectedVariant, // ✅ New
+        selectedVariant,
     } = useProductVariation(product.attributes, product.variations);
 
-    // Choose price: variant price if available, else product price
+
+
     const price = selectedVariant?.discount_price || selectedVariant?.regular_price || product.discount_price || product.regular_price;
     const regularPrice = selectedVariant?.regular_price || product.regular_price;
     const hasDiscount = (selectedVariant?.discount_price || product.discount_price) && regularPrice > price;
+    const current_stock = selectedVariant?.quantity || product.quantity;
+
+
+    console.log("selectedOptions", selectedOptions);
+    console.log("selectedVariant", selectedVariant);
+    console.log("product", product);
+
+
+    const guestProduct = {
+        product_id: product?.id,
+        product_variation_id: selectedVariant?.sku || null,
+        shop_id: product?.shop_id,
+        shop_name: product?.shop_name,
+        quantity: 1,
+        name: product?.name,
+        slug: product?.slug,
+        thumbnail: product?.thumbnail || selectedVariant?.image,
+        current_stock: current_stock,
+        regular_price: regularPrice,
+        discount_price: price,
+        id_delivery_fee: product?.id_delivery_fee || selectedVariant?.id_delivery_fee,
+        od_delivery_fee: product?.od_delivery_fee || selectedVariant?.od_delivery_fee,
+        ed_delivery_fee: product?.ed_delivery_fee || selectedVariant?.ed_delivery_fee,
+        variation: null,
+        badges: product?.badges || [],
+        badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
+    };
+
+    console.log("guestProduct", guestProduct);
 
     return (
         <>
@@ -29,12 +63,20 @@ const ProductDetails = ({ product }) => {
                 )}
             </div>
 
+            <Quantity
+                quantity={quantity}
+                setQuantity={setQuantity}
+                stock={current_stock}
+            />
+
             <ProductActionBtn
-                product={product}
+                product={guestProduct}
                 selectedOptions={selectedOptions}
                 groupedAttributes={groupedAttributes}
                 handleAttributeSelect={handleAttributeSelect}
                 isOptionAvailable={isOptionAvailable}
+                selectedVariant={selectedVariant}
+
             />
         </>
     );
