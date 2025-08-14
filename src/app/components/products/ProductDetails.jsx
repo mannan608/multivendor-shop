@@ -27,13 +27,17 @@ const ProductDetails = ({ product }) => {
     console.log("selectedVariant", selectedVariant);
     console.log("product", product);
 
+    const variations = selectedVariant?.variant?.map((variation) => `${variation.attribute_name}: ${variation.attribute_option}`)
+        .join(", ")
+
+    console.log("quantity", quantity)
 
     const guestProduct = {
         product_id: product?.id,
         product_variation_id: selectedVariant?.sku || null,
         shop_id: product?.shop_id,
         shop_name: product?.shop_name,
-        quantity: 1,
+        quantity: quantity,
         name: product?.name,
         slug: product?.slug,
         thumbnail: product?.thumbnail || selectedVariant?.image,
@@ -43,12 +47,12 @@ const ProductDetails = ({ product }) => {
         id_delivery_fee: product?.id_delivery_fee || selectedVariant?.id_delivery_fee,
         od_delivery_fee: product?.od_delivery_fee || selectedVariant?.od_delivery_fee,
         ed_delivery_fee: product?.ed_delivery_fee || selectedVariant?.ed_delivery_fee,
-        variation: null,
+        variation: variations || null,
         badges: product?.badges || [],
         badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
     };
 
-    console.log("guestProduct", guestProduct);
+
 
     return (
         <>

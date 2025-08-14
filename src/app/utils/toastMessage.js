@@ -7,7 +7,7 @@ export const defaultToastOptions = {
     transition: "fadeIn",
     icon: '',
     sound: true,
-    // className: "custom-toast", 
+    className: "tn-toast",
 };
 
 export const toastSuccess = (message, options = {}) => {

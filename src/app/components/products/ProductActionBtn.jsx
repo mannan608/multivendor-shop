@@ -32,9 +32,7 @@ const ProductActionBtn = ({ product, selectedOptions,
                 console.error('Failed to add to cart:', error);
             }
         } else {
-            // console.log("guestCart", product);
             dispatch(addToGuestCart({ product }));
-            console.log("Added to guest cart", product);
         }
     };
 

@@ -10,7 +10,6 @@ const Review = async ({ productSlug }) => {
         if (!dateString) return '';
         return new Date(dateString).toLocaleDateString('en-US', options);
     };
-    console.log("review", review);
 
     return (
         <>

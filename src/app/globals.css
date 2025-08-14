@@ -147,6 +147,18 @@ li {
   list-style: none;
 }
 
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.no-spinner[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
 @media (max-width: 1280px) {
   .container-fluid {
     width: 100% !important;
@@ -154,3 +166,7 @@ li {
     padding-right: 20px;
   }
 }
+
+/* .toast-content .message span {
+  font-size: 12px !important;
+} */
