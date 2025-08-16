@@ -22,13 +22,15 @@ const addToCartSlice = createSlice({
         addToGuestCart: (state, action) => {
             const { product } = action.payload;
             const existingItem = state?.items?.find(
-                item => item?.product_id === product?.id &&
-                    item?.product_variation_id === product?.product_variation_id
+                item =>
+                    item?.product_id === product?.id &&
+                    item?.product_variation_id === product?.product_variation_id &&
+                    item?.shop_id === product?.shop_id
             );
 
             if (existingItem) {
                 existingItem.quantity += product?.quantity;
-
+                toastSuccess('Product quantity updated in cart');
             } else {
                 state.items.push({
                     product_id: product?.id,
@@ -40,7 +42,6 @@ const addToCartSlice = createSlice({
                     slug: product?.slug,
                     thumbnail: product?.thumbnail,
                     current_stock: product?.current_stock,
-                    // max_cart_quantity: product?.max_cart_quantity,
                     regular_price: product?.regular_price,
                     discount_price: product?.discount_price,
                     id_delivery_fee: product?.id_delivery_fee,
@@ -50,12 +51,14 @@ const addToCartSlice = createSlice({
                     badges: product?.badges || [],
                     badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
                 });
+                toastSuccess('Product added to cart');
             }
 
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('guestCart', JSON.stringify(state.items));
+            if (typeof window !== "undefined") {
+                localStorage.setItem("guestCart", JSON.stringify(state.items));
             }
         },
+
         removeFromGuestCart: (state, action) => {
             state.items = state.items.filter(
                 item => !(item.product_id === action.payload.product_id &&
