@@ -30,7 +30,7 @@ const SingleProduct = async ({ params }) => {
                             <div className="product-info flex-1">
                                 <div className="space-y-6">
                                     <h1 className="text-base md:text-xl font-medium">{product.name}</h1>
-                                  <ProductDetails product={product} />
+                                    <ProductDetails product={product} />
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@ const SingleProduct = async ({ params }) => {
                                     <div className="w-10 h-10 border border-neutral-200 p-1 rounded-full  overflow-hidden">
                                         <Image
                                             src={
-                                                shopDetails?.shop_settings?.desktop?.shopInfo?.shopLogo ||
+                                                shopDetails?.shop_settings?.shop_logo_and_cover?.shop_logo?.image ||
                                                 "/shop_default_img.svg"
                                             }
                                             width={40}

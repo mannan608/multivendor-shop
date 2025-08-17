@@ -2,6 +2,7 @@
 
 import CheckMark from "@/app/components/icons/CheckMark";
 import Quantity from "@/app/components/ui/Quantity";
+import { useGetCartItemsQuery } from "@/redux/api/carts/addtocart/addToCartApi";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 
@@ -11,6 +12,8 @@ const CartPage = () => {
   const guestCart = useSelector(state => state.cart?.items);
 
   // console.log("guestCart", guestCart);
+  const { data: apiCartItems } = useGetCartItemsQuery();
+  console.log("apiCartItems", apiCartItems);
 
   const groupedItems = guestCart.reduce((acc, item) => {
     (acc[item.shop_name] = acc[item.shop_name] || []).push(item);
