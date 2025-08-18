@@ -1,8 +1,11 @@
+import ProtectedRoute from '@/app/components/protected/ProtectedRoute'
 import React from 'react'
 
 const CheckOut = () => {
     return (
-        <div>CheckOut</div>
+        <ProtectedRoute>
+            <div>CheckOut</div>
+        </ProtectedRoute>
     )
 }
 

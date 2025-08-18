@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice/apiSlice";
-import { updateUser, userLoggedIn } from "./authSlice";
+import { updateUser, userLoggedIn, userNeedsPassword } from "./authSlice";
 
 export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -24,14 +24,15 @@ export const authApi = apiSlice.injectEndpoints({
                         const accessToken = data.data.token;
                         const user = data.data.user;
 
-                        // Check if user needs to set password (second time login)
+                        // use Redux to track "needs password" state
                         if (data.data.set_password === false) {
-                            // First time or user already has password - direct login
+                            // User already has password OR no password required
                             localStorage.setItem("auth", JSON.stringify({ accessToken, user }));
                             dispatch(userLoggedIn({ accessToken, user }));
                         } else {
-                            // Second time - store in temporary auth for password setup
+                            // User needs to set password
                             localStorage.setItem("passAuth", JSON.stringify({ accessToken, user }));
+                            dispatch(userNeedsPassword({ accessToken, user }));
                         }
                     }
                 } catch (err) {
@@ -40,7 +41,6 @@ export const authApi = apiSlice.injectEndpoints({
             },
         }),
 
-        // Set password for second-time users
         setPassword: builder.mutation({
             query: (data) => ({
                 url: "/new-password",
@@ -56,15 +56,15 @@ export const authApi = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled;
 
-                    const passAuth = JSON.parse(localStorage.getItem("passAuth") || '{}');
+                    const passAuth = JSON.parse(localStorage.getItem("passAuth") || "{}");
 
                     if (passAuth.accessToken) {
                         const authData = {
                             accessToken: passAuth.accessToken,
-                            user: passAuth.user || null
+                            user: passAuth.user || null,
                         };
 
-                        // Move from passAuth to main auth
+                        // promote from passAuth → auth
                         localStorage.setItem("auth", JSON.stringify(authData));
                         localStorage.removeItem("passAuth");
 
@@ -76,7 +76,6 @@ export const authApi = apiSlice.injectEndpoints({
             },
         }),
 
-        // Login with password (for users who already have password)
         login: builder.mutation({
             query: (data) => ({
                 url: "/login",
@@ -163,7 +162,7 @@ export const authApi = apiSlice.injectEndpoints({
                         const currentAuth = getState().auth;
                         localStorage.setItem("auth", JSON.stringify({
                             accessToken: currentAuth.accessToken,
-                            user
+                            user,
                         }));
                         dispatch(updateUser(user));
                     }
@@ -183,5 +182,5 @@ export const {
     useUpdateProfileMutation,
     useResetPasswordMutation,
     useSentOtpEmailMutation,
-    useVerifyEmailOtpMutation
+    useVerifyEmailOtpMutation,
 } = authApi;

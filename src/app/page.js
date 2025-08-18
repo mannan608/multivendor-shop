@@ -12,6 +12,7 @@ export default async function Home() {
           <section className="">
             <Hero />
           </section>
+
         </div>
       </div>
     </>

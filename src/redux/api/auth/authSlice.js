@@ -32,12 +32,12 @@ const authSlice = createSlice({
         setLoading: (state, action) => {
             state.isLoading = action.payload;
         },
-        // Action for when user needs to set password
+        // when user verified OTP but still needs to set password
         userNeedsPassword: (state, action) => {
             const { accessToken, user } = action.payload;
             state.user = user;
             state.accessToken = accessToken;
-            state.isAuthenticated = false; // Not fully authenticated until password is set
+            state.isAuthenticated = false;
             state.isLoading = false;
         },
     },
@@ -48,7 +48,7 @@ export const {
     userLoggedOut,
     updateUser,
     setLoading,
-    userNeedsPassword
+    userNeedsPassword,
 } = authSlice.actions;
 
 export default authSlice.reducer;
