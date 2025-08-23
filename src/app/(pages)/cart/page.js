@@ -2,6 +2,7 @@
 
 import CheckMark from "@/app/components/icons/CheckMark";
 import Quantity from "@/app/components/ui/Quantity";
+import { groupByShop } from "@/app/utils/groupByShop";
 import { useGetCartItemsQuery } from "@/redux/api/carts/addtocart/addToCartApi";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -11,14 +12,14 @@ const CartPage = () => {
 
   const guestCart = useSelector(state => state.cart?.items);
 
-  // console.log("guestCart", guestCart);
-  const { data: apiCartItems } = useGetCartItemsQuery();
-  console.log("apiCartItems", apiCartItems);
 
-  const groupedItems = guestCart.reduce((acc, item) => {
-    (acc[item.shop_name] = acc[item.shop_name] || []).push(item);
-    return acc;
-  }, {});
+  const { accessToken } = useSelector(state => state.auth);
+  const { data: apiCartItems, isLoading, isFetching } = useGetCartItemsQuery(undefined, {
+    skip: !accessToken,
+  });
+  const CartItems = guestCart;
+
+  const groupedItems = groupByShop(guestCart || []);
 
   console.log("groupedItems", groupedItems);
 
@@ -66,7 +67,7 @@ const CartPage = () => {
               Packly Bangladesh
             </div>
             <div className="items">
-              <div className="item flex gap-4 items-start border-b border-neutral-200 py-4 pl-3">
+              <div className="item flex gap-4 items-start border-b last:border-b-0 border-neutral-200 py-4 pl-3">
                 <label className="flex items-center cursor-pointer relative">
                   <input
                     type="checkbox"
@@ -101,53 +102,6 @@ const CartPage = () => {
                     {/* Product Price */}
                     <h5 className="product-price hidden md:block font-semibold text-xl flex-shrink-0 w-fit">
                       ৳11390000 <del className="text-neutral-400 ml-1">৳ 1500</del>
-                    </h5>
-                  </div>
-
-                  <div className="flex gap-4 mt-3 justify-between md:justify-start md:gap-4">
-                    <h5 className="md:hidden font-semibold flex flex-col-reverse text-base">
-                      ৳1139 <del className="text-gray-400 text-xs">৳ 1500</del>
-                    </h5>
-                    <Quantity />
-                    <button className="text-red-500 hover:underline hidden md:block">Remove</button>
-                  </div>
-                </div>
-              </div>
-              <div className="item flex gap-4 items-start border-b border-neutral-200 py-4 pl-3">
-                <label className="flex items-center cursor-pointer relative">
-                  <input
-                    type="checkbox"
-                    className="peer h-4 w-4 cursor-pointer transition-all appearance-none rounded  border border-neutral-300 checked:bg-[#00b795] checked:border-[#00b795]"
-
-                  />
-                  <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                    <CheckMark />
-                  </span>
-                </label>
-                {/* Image container */}
-                <div className="flex-shrink-0 max-w-[64px] md:max-w-[100px]">
-                  <Image
-                    src="/images/product.png"
-                    alt="Product Image"
-                    width={100}
-                    height={100}
-                    className="w-full h-auto object-contain"
-                  />
-                </div>
-
-                {/* Info container */}
-                <div className="flex-grow">
-                  <div className="flex gap-4 justify-between">
-                    {/* Product Info */}
-                    <div className="product-info flex-grow w-full">
-                      <h5 className="font-semibold line-clamp-1">ipsam lorem ipsam ipsamlorem ipsamlorem ipsam lorem ipsam lorem ipsam lorem ipsam lorem ipsam </h5>
-                      <p className="text-sm text-gray-600">variation</p>
-                      <p className="text-xs text-gray-500">SKU :</p>
-                    </div>
-
-                    {/* Product Price */}
-                    <h5 className="product-price hidden md:block font-semibold text-xl flex-shrink-0 w-fit">
-                      ৳1139 <del className="text-neutral-400 ml-1">৳ 1500</del>
                     </h5>
                   </div>
 
