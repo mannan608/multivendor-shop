@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {  useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import ProductCard from "@/app/components/products/ProductCard";
 import { useGetProductsQuery } from "@/redux/api/products/productsApi";
 import SidebarFilter from "@/app/components/search_filter/SidebarFilter";
@@ -40,6 +40,7 @@ const Products = () => {
             </p>
         );
     }
+
 
     return (
         <div className="min-h-screen my-12 md:mt-4">

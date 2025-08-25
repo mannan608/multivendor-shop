@@ -10,6 +10,7 @@ export const groupByShop = (data = []) => {
             }
 
             acc[item.shop_id].products.push({
+                product_id: item.product_id,
                 product_variation_id: item.product_variation_id,
                 name: item.name,
                 slug: item.slug,

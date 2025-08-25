@@ -1,4 +1,4 @@
-import { toastSuccess } from '@/app/utils/toastMessage';
+import { toastSuccess, toastWarning } from '@/app/utils/toastMessage';
 import { createSlice } from '@reduxjs/toolkit';
 
 // Helper function to load cart from localStorage
@@ -21,19 +21,30 @@ const addToCartSlice = createSlice({
     reducers: {
         addToGuestCart: (state, action) => {
             const { product } = action.payload;
-            const existingItem = state?.items?.find(
-                item =>
-                    item?.product_id === product?.id &&
-                    item?.product_variation_id === product?.product_variation_id &&
-                    item?.shop_id === product?.shop_id
-            );
+            const existingItem = state?.items?.find((item) => {
+                if (product?.is_variant) {
+                    return (
+                        item?.product_id === product?.product_id && item?.product_variation_id === product?.product_variation_id
+                    );
+                }
+                return (
+                    item?.product_id === product?.product_id
+                );
+            });
 
             if (existingItem) {
-                existingItem.quantity += product?.quantity;
-                toastSuccess('Product quantity updated in cart');
+                const newQuantity = existingItem.quantity + product?.quantity;
+                if (newQuantity > existingItem.current_stock) {
+                    toastWarning(
+                        `Only ${existingItem.current_stock} items are available. You already have ${existingItem.quantity} in your cart.`
+                    );
+                    return;
+                }
+                existingItem.quantity = newQuantity;
+                toastSuccess("Product quantity updated in cart");
             } else {
                 state.items.push({
-                    product_id: product?.id,
+                    product_id: product?.product_id,
                     product_variation_id: product?.product_variation_id || null,
                     shop_id: product?.shop_id,
                     shop_name: product?.shop_name,

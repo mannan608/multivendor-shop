@@ -7,6 +7,7 @@ import Quantity from "../ui/Quantity";
 const ProductDetails = ({ product }) => {
     const [quantity, setQuantity] = useState(1);
 
+
     const {
         selectedOptions,
         groupedAttributes,
@@ -30,16 +31,17 @@ const ProductDetails = ({ product }) => {
     const variations = selectedVariant?.variant?.map((variation) => `${variation.attribute_name}: ${variation.attribute_option}`)
         .join(", ")
 
-    console.log("quantity", quantity)
+
 
     const guestProduct = {
         product_id: product?.id,
-        product_variation_id: selectedVariant?.sku || null,
+        product_variation_id: selectedVariant?.id || null,
         shop_id: product?.shop_id,
         shop_name: product?.shop_name,
         quantity: quantity,
         name: product?.name,
         slug: product?.slug,
+        is_variant: product?.is_variant,
         thumbnail: product?.thumbnail || selectedVariant?.image,
         current_stock: current_stock,
         regular_price: regularPrice,
@@ -52,7 +54,9 @@ const ProductDetails = ({ product }) => {
         badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
     };
 
-
+    const handleQuantityChange = (newQuantity) => {
+        setQuantity(newQuantity);
+    };
 
     return (
         <>
@@ -68,9 +72,10 @@ const ProductDetails = ({ product }) => {
             </div>
 
             <Quantity
-                quantity={quantity}
-                setQuantity={setQuantity}
+                initialQuantity={quantity}
                 stock={current_stock}
+                onQuantityChange={handleQuantityChange}
+                isStandalone={true}
             />
 
             <ProductActionBtn

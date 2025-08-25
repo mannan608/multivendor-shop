@@ -15,6 +15,8 @@ const SingleProduct = async ({ params }) => {
     const product = await getSingleProduct(slug);
     const shopDetails = await getShopDetails({ id: product.shop_id });
 
+    console.log("first", product)
+
 
     return (
         <section className="single-product  mt-5 mb-5">
