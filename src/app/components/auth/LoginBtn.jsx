@@ -25,9 +25,9 @@ const LoginButton = () => {
                             <Link
                                 href="/auth/login"
                                 scroll={false}
-                                className="block px-4 py-1 text-white bg-primary-500 hover:bg-primary-600 rounded font-medium text-base"
+                                className="block px-4 py-1 text-white  font-medium text-base"
                             >
-                                Login
+                                Login/Signup
                             </Link >
                         )
                     }

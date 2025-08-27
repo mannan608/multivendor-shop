@@ -8,28 +8,23 @@ const Quantity = ({
     productVariationId = null,
     initialQuantity,
     stock,
-    // New props for product details page usage
-    onQuantityChange, // Callback function to pass quantity to parent
-    isStandalone = false // Determines if used in product details (true) or cart (false)
+    onQuantityChange,
+    isStandalone = false 
 }) => {
     const dispatch = useDispatch();
     const [quantity, setLocalQuantity] = useState(initialQuantity);
     const [warning, setWarning] = useState('');
-
-    // Sync local quantity when initialQuantity changes
     useEffect(() => {
         setLocalQuantity(initialQuantity);
     }, [initialQuantity]);
 
     const updateQuantity = (newQuantity) => {
-        if (isStandalone) {
-            // For product details page: just update local state and notify parent
+        if (isStandalone) {           
             setLocalQuantity(newQuantity);
             if (onQuantityChange) {
                 onQuantityChange(newQuantity);
             }
         } else {
-            // For cart page: update Redux store
             dispatch(updateGuestCartItemQuantity({
                 product_id: productId,
                 product_variation_id: productVariationId,

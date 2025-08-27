@@ -1,6 +1,9 @@
 import { toastSuccess, toastWarning } from '@/app/utils/toastMessage';
 import { createSlice } from '@reduxjs/toolkit';
 
+// Helper to get unique item ID
+const getItemId = (item) => item?.product_variation_id || item?.product_id;
+
 // Helper function to load cart from localStorage
 const loadCartFromLocalStorage = () => {
     if (typeof window !== 'undefined') {
@@ -10,8 +13,18 @@ const loadCartFromLocalStorage = () => {
     return [];
 };
 
+// Helper to load selected items from localStorage
+const loadSelectedFromLocalStorage = () => {
+    if (typeof window !== 'undefined') {
+        const selected = localStorage.getItem('selectedCartItems');
+        return selected ? JSON.parse(selected) : [];
+    }
+    return [];
+};
+
 const initialState = {
     items: loadCartFromLocalStorage(),
+    selectedItems: loadSelectedFromLocalStorage(), // Array of selected item IDs
     status: 'idle',
 };
 
@@ -71,13 +84,17 @@ const addToCartSlice = createSlice({
         },
 
         removeFromGuestCart: (state, action) => {
+            const itemIdToRemove = getItemId(action.payload);
             state.items = state.items.filter(
-                item => !(item.product_id === action.payload.product_id &&
-                    item.product_variation_id === action.payload.product_variation_id)
+                item => getItemId(item) !== itemIdToRemove
             );
+            // Clean up selection if removed
+            state.selectedItems = state.selectedItems.filter(id => id !== itemIdToRemove);
             if (typeof window !== 'undefined') {
                 localStorage.setItem('guestCart', JSON.stringify(state.items));
+                localStorage.setItem('selectedCartItems', JSON.stringify(state.selectedItems));
             }
+            toastSuccess('Product removed from cart');
         },
         updateGuestCartItemQuantity: (state, action) => {
             const { product_id, product_variation_id, quantity } = action.payload;
@@ -94,16 +111,60 @@ const addToCartSlice = createSlice({
         },
         clearGuestCart: (state) => {
             state.items = [];
+            state.selectedItems = []; // Clear selections
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('guestCart');
+                localStorage.removeItem('selectedCartItems');
             }
         },
         syncGuestCartToServer: (state) => {
             state.items = [];
+            state.selectedItems = []; // Clear selections
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('guestCart');
+                localStorage.removeItem('selectedCartItems');
             }
-        }
+        },
+        // New reducers for selections
+        toggleItemSelection: (state, action) => {
+            const itemId = action.payload;
+            if (state.selectedItems.includes(itemId)) {
+                state.selectedItems = state.selectedItems.filter(id => id !== itemId);
+            } else {
+                state.selectedItems.push(itemId);
+            }
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('selectedCartItems', JSON.stringify(state.selectedItems));
+            }
+        },
+        toggleShopSelection: (state, action) => {
+            const { shopId, selectAll } = action.payload;
+            const shopItems = state.items.filter(item => item.shop_id === shopId);
+            const shopItemIds = shopItems.map(getItemId);
+            if (selectAll) {
+                // Add all shop items if not already selected
+                state.selectedItems = [...new Set([...state.selectedItems, ...shopItemIds])];
+            } else {
+                // Remove all shop items
+                state.selectedItems = state.selectedItems.filter(id => !shopItemIds.includes(id));
+            }
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('selectedCartItems', JSON.stringify(state.selectedItems));
+            }
+        },
+        toggleAllSelection: (state, action) => {
+            const selectAll = action.payload;
+            if (selectAll) {
+                // Select all items across all shops
+                state.selectedItems = state.items.map(getItemId);
+            } else {
+                // Deselect all
+                state.selectedItems = [];
+            }
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('selectedCartItems', JSON.stringify(state.selectedItems));
+            }
+        },
     },
 });
 
@@ -112,7 +173,10 @@ export const {
     removeFromGuestCart,
     updateGuestCartItemQuantity,
     clearGuestCart,
-    syncGuestCartToServer
+    syncGuestCartToServer,
+    toggleItemSelection,
+    toggleShopSelection,
+    toggleAllSelection,
 } = addToCartSlice.actions;
 
 export default addToCartSlice.reducer;
