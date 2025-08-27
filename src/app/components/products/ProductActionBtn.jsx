@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { useAddCartItemsMutation } from '@/redux/api/carts/addtocart/addToCartApi';
 import { addToGuestCart } from '@/redux/api/carts/addtocart/addToCartSlice';
 import { toastSuccess } from '@/app/utils/toastMessage';
+import { useRouter } from 'next/navigation';
 
 const ProductActionBtn = ({ product, selectedOptions,
     groupedAttributes,
@@ -13,7 +14,7 @@ const ProductActionBtn = ({ product, selectedOptions,
     isOptionAvailable
 }) => {
 
-
+    const router = useRouter();
     const dispatch = useDispatch();
     const isAuthenticated = false;
     const [addToCart] = useAddCartItemsMutation();
@@ -37,6 +38,10 @@ const ProductActionBtn = ({ product, selectedOptions,
         }
     };
 
+    const handleBuyNow = () => {
+        router.push('/buy-now');
+    }
+
     return (
         <>
             <ProductVariations
@@ -47,7 +52,7 @@ const ProductActionBtn = ({ product, selectedOptions,
             />
             <div className="flex gap-3 mt-5">
                 <OutlineBtn handleAction={handleAddToCart} text="Add to Cart" />
-                <PrimaryBtn handleAction={handleAddToCart} text="Buy Now" />
+                <PrimaryBtn handleAction={handleBuyNow} text="Buy Now" />
             </div>
 
 
