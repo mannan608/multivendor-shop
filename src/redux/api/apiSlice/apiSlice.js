@@ -28,7 +28,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         // Clear auth state and redirect to login
         api.dispatch({ type: 'auth/userLoggedOut' });
         localStorage.removeItem('auth');
-        localStorage.removeItem('passAuth');
     }
 
     return result;
@@ -37,6 +36,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User', 'Profile', 'cartitems'],
+    tagTypes: ['User', 'Profile', 'cartitems', 'addresses'],
     endpoints: () => ({}),
 });

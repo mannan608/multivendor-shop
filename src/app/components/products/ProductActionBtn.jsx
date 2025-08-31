@@ -4,7 +4,7 @@ import { PrimaryBtn } from '../ui/button/PrimaryBtn';
 import OutlineBtn from '../ui/button/OutlineBtn';
 import { useDispatch } from 'react-redux';
 import { useAddCartItemsMutation } from '@/redux/api/carts/addtocart/addToCartApi';
-import { addToGuestCart } from '@/redux/api/carts/addtocart/addToCartSlice';
+import { addToGuestCart, setBuyNowItem } from '@/redux/api/carts/addtocart/addToCartSlice';
 import { toastSuccess } from '@/app/utils/toastMessage';
 import { useRouter } from 'next/navigation';
 
@@ -39,7 +39,8 @@ const ProductActionBtn = ({ product, selectedOptions,
     };
 
     const handleBuyNow = () => {
-        router.push('/buy-now');
+        dispatch(setBuyNowItem(product));
+        router.push("/buy-now");
     }
 
     return (

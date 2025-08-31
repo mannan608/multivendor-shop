@@ -2,15 +2,19 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export default function BuyNow() {
     const [paymentMethod, setPaymentMethod] = useState("cod");
+    const buyNowItem = useSelector((state) => state.cart.buyNowItem);
+
+    console.log("buyNowItem", buyNowItem);
 
     return (
         <div className="w-full min-h-screen bg-gray-50 py-6">
             <div className="container mx-auto px-4">
                 {/* Page Heading */}
-                <h1 className="text-2xl font-semibold mb-6">Checkout</h1>
+                <h1 className="text-2xl font-semibold mb-6">Buy Checkout</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Section */}
@@ -37,7 +41,7 @@ export default function BuyNow() {
                             {/* Shop Section */}
                             <div className="shop-items mb-6">
                                 <div className="flex shop-name px-3 py-2 bg-neutral-100 gap-2">
-                                    Shop Name
+                                    {buyNowItem?.shop_name}
                                 </div>
                                 <div className="flex items-center gap-4 mb-4 mt-4 delivery-option">
                                     <label className="flex items-center gap-2">
@@ -52,13 +56,15 @@ export default function BuyNow() {
 
                                 <div className="items">
                                     <div className="item flex gap-4 border-b border-neutral-200 pb-4">
-                                        <Image
-                                            src="/shop_default_img.svg"
-                                            alt="Product"
-                                            width={80}
-                                            height={80}
-                                            className="rounded"
-                                        />
+                                        <div className="w-16 h-16 md:w-20 md:h-20">
+                                            <Image
+                                                src={buyNowItem?.thumbnail}
+                                                alt="Product"
+                                                width={80}
+                                                height={80}
+                                                className="rounded"
+                                            />
+                                        </div>
                                         <div className="flex-1">
                                             <h4 className="font-medium">STOSFF multigrain nutrition food for 250g</h4>
                                             <p className="text-sm text-gray-500">Size: XL , Color: Green</p>

@@ -13,6 +13,14 @@ const loadCartFromLocalStorage = () => {
     return [];
 };
 
+const loadBuyNowItemFromLocalStorage = () => {
+    if (typeof window !== 'undefined') {
+        const buyNowItem = localStorage.getItem('buyNowItem');
+        return buyNowItem ? JSON.parse(buyNowItem) : null;
+    }
+    return null;
+}
+
 // Helper to load selected items from localStorage
 const loadSelectedFromLocalStorage = () => {
     if (typeof window !== 'undefined') {
@@ -24,7 +32,8 @@ const loadSelectedFromLocalStorage = () => {
 
 const initialState = {
     items: loadCartFromLocalStorage(),
-    selectedItems: loadSelectedFromLocalStorage(), // Array of selected item IDs
+    selectedItems: loadSelectedFromLocalStorage(),
+    buyNowItem: loadBuyNowItemFromLocalStorage(),
     status: 'idle',
 };
 
@@ -165,6 +174,18 @@ const addToCartSlice = createSlice({
                 localStorage.setItem('selectedCartItems', JSON.stringify(state.selectedItems));
             }
         },
+        setBuyNowItem: (state, action) => {
+            state.buyNowItem = action.payload; // single product object
+            if (typeof window !== "undefined") {
+                localStorage.setItem("buyNowItem", JSON.stringify(state.buyNowItem));
+            }
+        },
+        clearBuyNowItem: (state) => {
+            state.buyNowItem = null;
+            if (typeof window !== "undefined") {
+                localStorage.removeItem("buyNowItem");
+            }
+        },
     },
 });
 
@@ -177,6 +198,8 @@ export const {
     toggleItemSelection,
     toggleShopSelection,
     toggleAllSelection,
+    setBuyNowItem,
+    clearBuyNowItem,
 } = addToCartSlice.actions;
 
 export default addToCartSlice.reducer;
