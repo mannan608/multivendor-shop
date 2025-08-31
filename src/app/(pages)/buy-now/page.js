@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import Quantity from "@/app/components/ui/Quantity";
 
 export default function BuyNow() {
     const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -55,29 +56,46 @@ export default function BuyNow() {
                                 </div>
 
                                 <div className="items">
-                                    <div className="item flex gap-4 border-b border-neutral-200 pb-4">
-                                        <div className="w-16 h-16 md:w-20 md:h-20">
-                                            <Image
-                                                src={buyNowItem?.thumbnail}
-                                                alt="Product"
-                                                width={80}
-                                                height={80}
-                                                className="rounded"
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h4 className="font-medium">STOSFF multigrain nutrition food for 250g</h4>
-                                            <p className="text-sm text-gray-500">Size: XL , Color: Green</p>
-
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-sm">QTY: 01</p>
-                                            <div>
-                                                <del className="font-medium line-through text-gray-400">৳1200</del>
-                                                <p className="font-semibold">৳900</p>
+                                    <div className="item w-full flex flex-col gap-4 border-b border-neutral-200 pb-4 md:flex-row md:items-center md:justify-between">
+                                        {/* Left: Image + Details */}
+                                        <div className="flex gap-4 flex-1">
+                                            <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+                                                <Image
+                                                    src={buyNowItem?.thumbnail || "/shop_default_img.svg"}
+                                                    alt={buyNowItem?.name || "Product"}
+                                                    width={80}
+                                                    height={80}
+                                                    className="rounded"
+                                                />
                                             </div>
+                                            <div className="flex flex-col justify-between">
+                                                <div>
+                                                    <h4 className="font-medium text-sm md:text-base">{buyNowItem?.name}</h4>
+                                                    <p className="text-sm text-gray-500">{buyNowItem?.variation}</p>
+                                                </div>
 
-                                            <p className="text-green-600 text-sm mb-3">৳780 Discounted Price</p>
+                                                <Quantity
+                                                    productId={buyNowItem.product_id}
+                                                    productVariationId={buyNowItem.product_variation_id}
+                                                    initialQuantity={buyNowItem.quantity}
+                                                    stock={buyNowItem.current_stock}
+                                                    isStandalone={false}
+                                                    buyNowQty={true}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Right: Price + Quantity + Delete */}
+                                        <div className="flex flex-col items-end gap-2 mt-2 md:mt-0">
+                                            <p className="text-sm md:text-base">QTY: {buyNowItem?.quantity}</p>
+                                            <div className="flex flex-col items-end">
+                                                <del className="font-medium line-through text-gray-400">৳{buyNowItem?.regular_price}</del>
+                                                <p className="font-semibold">৳{buyNowItem?.discount_price}</p>
+                                            </div>
+                                            <p className="text-green-600 text-sm mb-3">
+                                                ৳{(Number(buyNowItem?.regular_price) || 0) - (Number(buyNowItem?.discount_price) || 0)} Discounted Price
+                                            </p>
+
                                         </div>
                                     </div>
                                 </div>

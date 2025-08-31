@@ -76,6 +76,7 @@ const ProductDetails = ({ product }) => {
                 stock={current_stock}
                 onQuantityChange={handleQuantityChange}
                 isStandalone={true}
+                buyNowQty={false}
             />
 
             <ProductActionBtn

@@ -200,6 +200,7 @@ const CartPage = () => {
                                 initialQuantity={item.quantity}
                                 stock={item.current_stock}
                                 isStandalone={false}
+                                buyNowQty={false}
                               />
                               {(selectedItems.includes(itemId) || shopAllSelected) && (
                                 <button

@@ -1,4 +1,4 @@
-import { updateGuestCartItemQuantity } from "@/redux/api/carts/addtocart/addToCartSlice";
+import { updateBuyNowItemQuantity, updateGuestCartItemQuantity } from "@/redux/api/carts/addtocart/addToCartSlice";
 import { useState, useEffect } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -9,7 +9,8 @@ const Quantity = ({
     initialQuantity,
     stock,
     onQuantityChange,
-    isStandalone = false 
+    isStandalone = false,
+    buyNowQty = false
 }) => {
     const dispatch = useDispatch();
     const [quantity, setLocalQuantity] = useState(initialQuantity);
@@ -19,17 +20,26 @@ const Quantity = ({
     }, [initialQuantity]);
 
     const updateQuantity = (newQuantity) => {
-        if (isStandalone) {           
+        if (isStandalone) {
             setLocalQuantity(newQuantity);
             if (onQuantityChange) {
                 onQuantityChange(newQuantity);
             }
         } else {
-            dispatch(updateGuestCartItemQuantity({
-                product_id: productId,
-                product_variation_id: productVariationId,
-                quantity: newQuantity
-            }));
+            if (buyNowQty) {
+                dispatch(updateBuyNowItemQuantity({
+                    product_id: productId,
+                    product_variation_id: productVariationId,
+                    quantity: newQuantity
+                }));
+
+            } else {
+                dispatch(updateGuestCartItemQuantity({
+                    product_id: productId,
+                    product_variation_id: productVariationId,
+                    quantity: newQuantity
+                }));
+            }
         }
     };
 

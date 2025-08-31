@@ -117,6 +117,7 @@ const addToCartSlice = createSlice({
                     localStorage.setItem('guestCart', JSON.stringify(state.items));
                 }
             }
+            toastSuccess('Product quantity updated in cart');
         },
         clearGuestCart: (state) => {
             state.items = [];
@@ -186,6 +187,22 @@ const addToCartSlice = createSlice({
                 localStorage.removeItem("buyNowItem");
             }
         },
+        updateBuyNowItemQuantity: (state, action) => {
+            const { quantity } = action.payload;
+            if (state.buyNowItem) {
+                if (quantity > state.buyNowItem.current_stock) {
+                    toastWarning(
+                        `Only ${state.buyNowItem.current_stock} items are available.`
+                    );
+                    return;
+                }
+                state.buyNowItem.quantity = quantity;
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('buyNowItem', JSON.stringify(state.buyNowItem));
+                }
+                toastSuccess('Buy Now item quantity updated');
+            }
+        },
     },
 });
 
@@ -193,6 +210,7 @@ export const {
     addToGuestCart,
     removeFromGuestCart,
     updateGuestCartItemQuantity,
+    updateBuyNowItemQuantity,
     clearGuestCart,
     syncGuestCartToServer,
     toggleItemSelection,
