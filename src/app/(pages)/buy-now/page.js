@@ -9,8 +9,6 @@ export default function BuyNow() {
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const buyNowItem = useSelector((state) => state.cart.buyNowItem);
 
-    console.log("buyNowItem", buyNowItem);
-
     return (
         <div className="w-full min-h-screen bg-gray-50 py-6">
             <div className="container mx-auto px-4">
@@ -69,8 +67,8 @@ export default function BuyNow() {
                                                 />
                                             </div>
                                             <div className="flex flex-col justify-between">
-                                                <div>
-                                                    <h4 className="font-medium text-sm md:text-base">{buyNowItem?.name}</h4>
+                                                <div className="mb-2">
+                                                    <h4 className="font-medium text-sm md:text-base line-clamp-1">{buyNowItem?.name}</h4>
                                                     <p className="text-sm text-gray-500">{buyNowItem?.variation}</p>
                                                 </div>
 

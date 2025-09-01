@@ -2,9 +2,9 @@
 import ProductVariations from './ProductVariations'
 import { PrimaryBtn } from '../ui/button/PrimaryBtn';
 import OutlineBtn from '../ui/button/OutlineBtn';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAddCartItemsMutation } from '@/redux/api/carts/addtocart/addToCartApi';
-import { addToGuestCart, setBuyNowItem } from '@/redux/api/carts/addtocart/addToCartSlice';
+import { addToGuestCart, clearBuyNowItem, setBuyNowItem } from '@/redux/api/carts/addtocart/addToCartSlice';
 import { toastSuccess } from '@/app/utils/toastMessage';
 import { useRouter } from 'next/navigation';
 
@@ -18,6 +18,8 @@ const ProductActionBtn = ({ product, selectedOptions,
     const dispatch = useDispatch();
     const isAuthenticated = false;
     const [addToCart] = useAddCartItemsMutation();
+    const buyNowItem = useSelector((state) => state.cart.buyNowItem);
+
 
 
     const handleAddToCart = async () => {
@@ -39,6 +41,9 @@ const ProductActionBtn = ({ product, selectedOptions,
     };
 
     const handleBuyNow = () => {
+        if (buyNowItem) {
+            dispatch(clearBuyNowItem());
+        }
         dispatch(setBuyNowItem(product));
         router.push("/buy-now");
     }

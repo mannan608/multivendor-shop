@@ -1,6 +1,6 @@
 export const groupByShop = (data = []) => {
     return Object.values(
-        data.reduce((acc, item) => {
+        data?.reduce((acc, item) => {
             if (!acc[item.shop_id]) {
                 acc[item.shop_id] = {
                     shop_id: item.shop_id,

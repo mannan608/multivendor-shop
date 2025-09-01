@@ -1,8 +1,11 @@
 "use client";
 
+import CartItems from "@/app/components/cart/CartItems";
 import CheckMark from "@/app/components/icons/CheckMark";
 import Quantity from "@/app/components/ui/Quantity";
 import { groupByShop } from "@/app/utils/groupByShop";
+import { toastWarning } from "@/app/utils/toastMessage";
+import { useCoupon } from "@/hooks/useCoupon";
 import { useGetCartItemsQuery } from "@/redux/api/carts/addtocart/addToCartApi";
 import {
   toggleItemSelection,
@@ -19,20 +22,31 @@ const getItemId = (item) => item?.product_variation_id || item?.product_id;
 
 const CartPage = () => {
   const dispatch = useDispatch();
-  const { items: guestCart, selectedItems = [] } = useSelector((state) => {
-    return state.cart || { items: [], selectedItems: [] };
-  });
+  const { coupon, discount, message } = useSelector((state) => state.coupon);
+  const { applyCoupon, removeCoupon, isLoading: applyCouponLoading } = useCoupon();
+  const [couponCode, setCouponCode] = useState("");
+  const { items: guestCart = [], selectedItems = [] } = useSelector(
+    (state) => state.cart || {}
+  );
   const { accessToken } = useSelector((state) => state.auth || {});
-  const { data: apiCartItems, isLoading, isFetching } = useGetCartItemsQuery(undefined, {
+  const {
+    data: apiCartItems,
+    isLoading,
+    isFetching,
+  } = useGetCartItemsQuery(undefined, {
     skip: !accessToken,
   });
+
+
   const cartItems = accessToken && apiCartItems ? apiCartItems : guestCart;
   const groupedItems = groupByShop(cartItems || []);
 
   const allItemIds = cartItems.map(getItemId);
-  const allSelected = allItemIds.length > 0 && allItemIds.every((id) => selectedItems.includes(id));
+  const allSelected =
+    allItemIds.length > 0 && allItemIds.every((id) => selectedItems.includes(id));
   const someSelected = allItemIds.some((id) => selectedItems.includes(id));
   const isAllIndeterminate = someSelected && !allSelected;
+
   const selectAllRef = useRef(null);
 
   useEffect(() => {
@@ -44,6 +58,7 @@ const CartPage = () => {
   const handleSelectAll = (e) => {
     dispatch(toggleAllSelection(e.target.checked));
   };
+
   const handleDeleteSelected = () => {
     selectedItems.forEach((itemId) => {
       const item = cartItems.find((i) => getItemId(i) === itemId);
@@ -58,12 +73,40 @@ const CartPage = () => {
     });
   };
 
-  const selectedCartItems = cartItems.filter((item) => selectedItems.includes(getItemId(item)));
-  const totalItems = selectedCartItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const selectedCartItems = cartItems.filter((item) =>
+    selectedItems.includes(getItemId(item))
+  );
+
+  const totalItems = selectedCartItems.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
+
   const totalPrice = selectedCartItems.reduce(
     (sum, item) => sum + (item.discount_price || 0) * (item.quantity || 1),
     0
   );
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!accessToken) {
+      toastWarning("Please login to apply coupon code.");
+      return;
+    }
+
+    if (!couponCode.trim()) return;
+
+    const orderData = {
+      coupon_code: couponCode,
+      product_id: cartItems.map((p) => p.id),
+      sku: cartItems.map((p) => p.sku),
+      quantity: cartItems.map((p) => p.qty),
+    };
+
+    await applyCoupon(orderData);
+  };
 
   return (
     <div className="container-fluid mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
@@ -227,6 +270,7 @@ const CartPage = () => {
               );
             })}
           </div>
+
         )}
       </div>
 
@@ -241,13 +285,37 @@ const CartPage = () => {
           <span>Shipping fee</span>
           <span className="text-blue-500">To be added</span>
         </div>
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Store / Packly coupon"
-            className="border rounded px-3 py-2 flex-1 text-sm"
-          />
-          <button className="bg-green-500 text-white px-4 rounded">Apply</button>
+        <div className="mb-4">
+          {!coupon ? (
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                placeholder="Store / Packly coupon"
+                className="border rounded px-3 py-2 flex-1 text-sm"
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="bg-green-500 text-white px-4 rounded disabled:opacity-50"
+              >
+                {isLoading ? "Applying..." : "Apply"}
+              </button>
+            </form>
+          ) : (
+            <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded p-2">
+              <p className="text-sm text-green-700">
+                {message} ✅ (Saved {discount})
+              </p>
+              <button
+                onClick={removeCoupon}
+                className="text-red-500 text-xs font-medium"
+              >
+                Remove
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex justify-between font-semibold mb-4">
           <span>Sub Total</span>
