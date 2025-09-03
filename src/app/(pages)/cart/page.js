@@ -11,8 +11,6 @@ import { toastWarning } from "@/app/utils/toastMessage";
 import { useCoupon } from "@/hooks/useCoupon";
 import { useGetCartItemsQuery } from "@/redux/api/carts/addtocart/addToCartApi";
 import {
-  toggleItemSelection,
-  toggleShopSelection,
   toggleAllSelection,
   removeFromGuestCart,
 } from "@/redux/api/carts/addtocart/addToCartSlice";
@@ -31,18 +29,19 @@ const CartPage = () => {
   const { items: guestCart = [], selectedItems = [] } = useSelector(
     (state) => state.cart || {}
   );
-  const { accessToken } = useSelector((state) => state.auth || {});
+  const { isAuthenticated } = useSelector((state) => state.auth || {});
+
   const {
     data,
     isLoading,
     isFetching,
   } = useGetCartItemsQuery(undefined, {
-    skip: !accessToken,
+    skip: !isAuthenticated,
   });
   const apiCartItems = data?.data ? formatProductData(data.data) : [];
 
-  const cartItems = Array.isArray(accessToken && apiCartItems ? apiCartItems : guestCart)
-    ? (accessToken && apiCartItems ? apiCartItems : guestCart)
+  const cartItems = Array.isArray(isAuthenticated && apiCartItems ? apiCartItems : guestCart)
+    ? (isAuthenticated && apiCartItems ? apiCartItems : guestCart)
     : [];
 
   const groupedItems = groupByShop(cartItems);
@@ -96,12 +95,12 @@ const CartPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!accessToken) {
-    //   toastWarning("Please login to apply coupon code.");
-    //   return; 
-    // }
+    if (!isAuthenticated) {
+      toastWarning("Please login to apply coupon code.");
+      return;
+    }
 
-    // if (!couponCode.trim()) return;
+    if (!couponCode.trim()) return;
 
     const productIds = selectedCartItems.map((item) => item.product_id);
     const productSku = selectedCartItems.map((item) => item.sku);
@@ -113,9 +112,7 @@ const CartPage = () => {
       quantity: productQty,
     };
 
-    console.log("orderData", orderData);
-
-    // await applyCoupon(orderData);
+    await applyCoupon(orderData);
   };
   const mounted = useHydration();
 

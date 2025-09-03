@@ -26,10 +26,10 @@ export const addToCartApi = apiSlice.injectEndpoints({
             invalidatesTags: ["cartitems"]
         }),
         syncGuestCart: builder.mutation({
-            query: (items) => ({
+            query: (data) => ({
                 url: "/cart",
                 method: "POST",
-                body: { items },
+                body: data,
             }),
             invalidatesTags: ["cartitems"]
         }),

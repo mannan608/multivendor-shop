@@ -5,7 +5,7 @@ import OutlineBtn from '../ui/button/OutlineBtn';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAddCartItemsMutation } from '@/redux/api/carts/addtocart/addToCartApi';
 import { addToGuestCart, clearBuyNowItem, setBuyNowItem } from '@/redux/api/carts/addtocart/addToCartSlice';
-import { toastSuccess } from '@/app/utils/toastMessage';
+import { toastError, toastSuccess } from '@/app/utils/toastMessage';
 import { useRouter } from 'next/navigation';
 
 const ProductActionBtn = ({ product, selectedOptions,
@@ -16,27 +16,37 @@ const ProductActionBtn = ({ product, selectedOptions,
 
     const router = useRouter();
     const dispatch = useDispatch();
-    const isAuthenticated = false;
     const [addToCart] = useAddCartItemsMutation();
     const buyNowItem = useSelector((state) => state.cart.buyNowItem);
-
-
+    const { isAuthenticated } = useSelector((state) => state.auth || {});
 
     const handleAddToCart = async () => {
-        if (isAuthenticated) {
-            try {
-                await addToCart({
-                    items: [{
-                        product_id: product?.product_id,
-                        product_variation_id: product?.product_variation_id,
-                        quantity: product?.quantity,
-                    }]
-                }).unwrap();
-            } catch (error) {
-                console.error('Failed to add to cart:', error);
+        try {
+            if (isAuthenticated) {
+                const cartApiData = {
+                    items: [
+                        {
+                            product_id: product?.product_id,
+                            product_variation_id: product?.product_variation_id || null,
+                            quantity: product?.quantity || 1,
+                            action: "increase",
+                        },
+                    ],
+                };
+
+                await addToCart(cartApiData).unwrap();
+                toastSuccess("Item added to your cart.");
+            } else {
+                dispatch(addToGuestCart({ product }));
             }
-        } else {
-            dispatch(addToGuestCart({ product }));
+        } catch (error) {
+            if (error?.data?.message) {
+                toastError(error.data.message);
+            } else if (error?.message) {
+                toastError(error.message);
+            } else {
+                toastError("Something went wrong while adding to cart.");
+            }
         }
     };
 

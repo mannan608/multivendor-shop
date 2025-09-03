@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import CompanySortInfo from "./CompanySortInfo";
+import { useSyncGuestCartMutation } from "@/redux/api/carts/addtocart/addToCartApi";
+import { syncCartAfterLogin } from "@/app/utils/syncCartAfterLogin";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -27,6 +29,7 @@ export default function LoginForm() {
     const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpMutation();
     const [setPassword, { isLoading: isSettingPassword }] = useSetPasswordMutation();
     const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+    const [syncGuestCart] = useSyncGuestCartMutation();
 
     const redirectTo = getRedirectPath();
 
@@ -59,6 +62,7 @@ export default function LoginForm() {
             try {
                 await login({ phone, password: data.password }).unwrap();
                 toastSuccess("Login successful!");
+                await syncCartAfterLogin(syncGuestCart);
                 router.back(redirectTo || "/");
             } catch (error) {
                 handleApiError(error);
@@ -80,6 +84,7 @@ export default function LoginForm() {
                         toastSuccess("OTP verified! Please set your password.");
                     } else {
                         toastSuccess("Login successful with OTP!");
+                        await syncCartAfterLogin(syncGuestCart);
                         router.back(redirectTo || "/");
                     }
                 }
@@ -108,6 +113,7 @@ export default function LoginForm() {
                     setStep("phone");
                 } else {
                     toastSuccess("Password set & login successful!");
+                    await syncCartAfterLogin(syncGuestCart);
                     router.back(redirectTo || "/");
                 }
             } catch (error) {
