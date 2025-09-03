@@ -28,7 +28,7 @@ const ProductDetails = ({ product }) => {
     console.log("selectedVariant", selectedVariant);
     console.log("product", product);
 
-    const variations = selectedVariant?.variant?.map((variation) => `${variation.attribute_name}: ${variation.attribute_option}`)
+    const variant = selectedVariant?.variant?.map((variation) => `${variation.attribute_name}: ${variation.attribute_option}`)
         .join(", ")
 
 
@@ -36,6 +36,7 @@ const ProductDetails = ({ product }) => {
     const guestProduct = {
         product_id: product?.id,
         product_variation_id: selectedVariant?.id || null,
+        sku: selectedVariant?.sku || null,
         shop_id: product?.shop_id,
         shop_name: product?.shop_name,
         quantity: quantity,
@@ -49,7 +50,7 @@ const ProductDetails = ({ product }) => {
         id_delivery_fee: product?.id_delivery_fee || selectedVariant?.id_delivery_fee,
         od_delivery_fee: product?.od_delivery_fee || selectedVariant?.od_delivery_fee,
         ed_delivery_fee: product?.ed_delivery_fee || selectedVariant?.ed_delivery_fee,
-        variation: variations || null,
+        variant: variant || null,
         badges: product?.badges || [],
         badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
     };

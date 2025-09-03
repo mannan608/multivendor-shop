@@ -68,6 +68,7 @@ const addToCartSlice = createSlice({
                 state.items.push({
                     product_id: product?.product_id,
                     product_variation_id: product?.product_variation_id || null,
+                    sku: product?.sku,
                     shop_id: product?.shop_id,
                     shop_name: product?.shop_name,
                     quantity: product?.quantity,
@@ -80,7 +81,7 @@ const addToCartSlice = createSlice({
                     id_delivery_fee: product?.id_delivery_fee,
                     od_delivery_fee: product?.od_delivery_fee,
                     ed_delivery_fee: product?.ed_delivery_fee,
-                    variation: product?.variation,
+                    variant: product?.variant,
                     badges: product?.badges || [],
                     badgeProductVariationsExclude: product?.badgeProductVariationsExclude || []
                 });

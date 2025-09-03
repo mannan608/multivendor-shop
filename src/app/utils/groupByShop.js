@@ -12,6 +12,7 @@ export const groupByShop = (data = []) => {
             acc[item.shop_id].products.push({
                 product_id: item.product_id,
                 product_variation_id: item.product_variation_id,
+                sku: item.sku,
                 name: item.name,
                 slug: item.slug,
                 thumbnail: item.thumbnail,
@@ -22,7 +23,7 @@ export const groupByShop = (data = []) => {
                 od_delivery_fee: item.od_delivery_fee,
                 ed_delivery_fee: item.ed_delivery_fee,
                 quantity: item.quantity,
-                variation: item.variation,
+                variant: item.variant,
                 badges: item.badges,
                 badgeProductVariationsExclude: item.badgeProductVariationsExclude,
             });
