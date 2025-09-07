@@ -17,6 +17,7 @@ import {
 import ShopItems from "@/app/components/cart/ShopItems";
 import { useHydration } from "@/hooks/useHydration";
 import { formatProductData } from "@/app/utils/formatProductData";
+import { useRouter } from "next/navigation";
 
 
 const getItemId = (item) => item?.product_variation_id || item?.product_id;
@@ -26,6 +27,8 @@ const CartPage = () => {
   const { coupon, discount, message } = useSelector((state) => state.coupon);
   const { applyCoupon, removeCoupon } = useCoupon();
   const [couponCode, setCouponCode] = useState("");
+  const router = useRouter();
+  // Redux state
   const { items: guestCart = [], selectedItems = [] } = useSelector(
     (state) => state.cart || {}
   );
@@ -118,7 +121,18 @@ const CartPage = () => {
 
   if (!mounted) return null;
 
-  console.log("cartItems", cartItems);
+  const handleProceedToCheckout = () => {
+    if (!isAuthenticated) {
+      toastWarning("Please login to proceed to checkout.");
+      return;
+    }
+    if (selectedItems.length === 0) {
+      toastWarning("Please select at least one item to proceed.");
+      return;
+    }
+    // Navigate to checkout page
+    router.push("/checkout");
+  };
 
   return (
     <div className="container-fluid mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
@@ -219,9 +233,9 @@ const CartPage = () => {
           <span>Sub Total</span>
           <span>৳{Math.ceil(totalPrice)}</span>
         </div>
-        <button
+        <button onClick={handleProceedToCheckout}
           className="w-full bg-green-500 text-white py-2 rounded mb-4"
-          disabled={selectedItems.length === 0}
+        // disabled={selectedItems.length === 0}
         >
           Proceed to Checkout
         </button>

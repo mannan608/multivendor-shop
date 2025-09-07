@@ -16,13 +16,13 @@ export const syncCartAfterLogin = async (syncGuestCart) => {
             const cartApiData = { items };
 
             await syncGuestCart(cartApiData).unwrap();
-
+            toastSuccess("Your cart has been synced successfully!");
             // Clear localStorage guestCart
             localStorage.removeItem("guestCart");
-
-            toastSuccess("Your cart has been synced successfully!");
+            
         }
     } catch (error) {
         console.error("Cart sync error:", error);
     }
+
 };
