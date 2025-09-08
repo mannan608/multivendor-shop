@@ -2,14 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Image from "next/image";
-// import CartItems from "@/app/components/cart/CartItems";
 import CheckMark from "@/app/components/icons/CheckMark";
-// import Quantity from "@/app/components/ui/Quantity";
 import { groupByShop } from "@/app/utils/groupByShop";
 import { toastWarning } from "@/app/utils/toastMessage";
 import { useCoupon } from "@/hooks/useCoupon";
-import { useGetCartItemsQuery } from "@/redux/api/carts/addtocart/addToCartApi";
+import { useGetCartItemsQuery, useUpdateCartItemsMutation } from "@/redux/api/carts/addtocart/addToCartApi";
 import {
   toggleAllSelection,
   removeFromGuestCart,
@@ -28,11 +25,11 @@ const CartPage = () => {
   const { applyCoupon, removeCoupon } = useCoupon();
   const [couponCode, setCouponCode] = useState("");
   const router = useRouter();
-  // Redux state
   const { items: guestCart = [], selectedItems = [] } = useSelector(
     (state) => state.cart || {}
   );
   const { isAuthenticated } = useSelector((state) => state.auth || {});
+
 
   const {
     data,
@@ -41,6 +38,8 @@ const CartPage = () => {
   } = useGetCartItemsQuery(undefined, {
     skip: !isAuthenticated,
   });
+
+  const [updateCartItems] = useUpdateCartItemsMutation();
   const apiCartItems = data?.data ? formatProductData(data.data) : [];
 
   const cartItems = Array.isArray(isAuthenticated && apiCartItems ? apiCartItems : guestCart)
@@ -57,16 +56,18 @@ const CartPage = () => {
 
   const selectAllRef = useRef(null);
 
+  // Update indeterminate state on mount
   useEffect(() => {
     if (selectAllRef.current) {
       selectAllRef.current.indeterminate = isAllIndeterminate;
     }
   }, [isAllIndeterminate]);
 
-  const handleSelectAll = (e) => {
+  // Select or deselect all items
+  const handleSelectAll = async (e) => {
     dispatch(toggleAllSelection(e.target.checked));
   };
-
+  // Delete selected items
   const handleDeleteSelected = () => {
     selectedItems.forEach((itemId) => {
       const item = cartItems.find((i) => getItemId(i) === itemId);
@@ -94,7 +95,7 @@ const CartPage = () => {
     (sum, item) => sum + (item.discount_price || 0) * (item.quantity || 1),
     0
   );
-
+  // Apply coupon
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -117,10 +118,13 @@ const CartPage = () => {
 
     await applyCoupon(orderData);
   };
+  // Hydration check
   const mounted = useHydration();
 
   if (!mounted) return null;
 
+
+  // Proceed to checkout
   const handleProceedToCheckout = () => {
     if (!isAuthenticated) {
       toastWarning("Please login to proceed to checkout.");
@@ -133,6 +137,7 @@ const CartPage = () => {
     // Navigate to checkout page
     router.push("/checkout");
   };
+  console.log("apiCartItems", apiCartItems);
 
   return (
     <div className="container-fluid mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">

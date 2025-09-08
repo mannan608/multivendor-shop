@@ -1,28 +1,34 @@
-import { toastSuccess } from "@/app/utils/toastMessage";
+import { toastSuccess } from "./toastMessage";
 
-export const syncCartAfterLogin = async (syncGuestCart) => {
+export const syncCartAfterLogin = async (
+    syncGuestCart,
+    refetchCart,
+    guestCartItems = [],
+    selectedCartItems = []
+) => {
     try {
-        const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        const items = guestCartItems.map((product) => {
+            const key = product.product_variation_id ?? product.product_id;
+            const isSelected = selectedCartItems.includes(key);
 
-        if (guestCart.length > 0) {
-            // Transform guestCart into API format
-            const items = guestCart.map((product) => ({
+            return {
                 product_id: product?.product_id,
                 product_variation_id: product?.product_variation_id || null,
                 quantity: product?.quantity || 1,
                 action: "increase",
-            }));
+                is_select: isSelected,
+            };
+        });
 
-            const cartApiData = { items };
-
-            await syncGuestCart(cartApiData).unwrap();
-            toastSuccess("Your cart has been synced successfully!");
-            // Clear localStorage guestCart
+        if (items.length > 0) {
+            await syncGuestCart({ items }).unwrap();
             localStorage.removeItem("guestCart");
-            
         }
+        await refetchCart();
+
+        toastSuccess("Your cart has been synced successfully!");
+        localStorage.removeItem("selectedCartItems");
     } catch (error) {
         console.error("Cart sync error:", error);
     }
-
 };

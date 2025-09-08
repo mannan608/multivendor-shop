@@ -9,12 +9,13 @@ import {
     useVerifyOtpMutation,
 } from "@/redux/api/auth/authApi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {  useState } from "react";
 import { useForm } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import CompanySortInfo from "./CompanySortInfo";
-import { useSyncGuestCartMutation } from "@/redux/api/carts/addtocart/addToCartApi";
+import { useGetCartItemsQuery, useSyncGuestCartMutation } from "@/redux/api/carts/addtocart/addToCartApi";
 import { syncCartAfterLogin } from "@/app/utils/syncCartAfterLogin";
+import { useSelector } from "react-redux";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -25,11 +26,20 @@ export default function LoginForm() {
     const [otp, setOtp] = useState("");
     const [isForgotFlow, setIsForgotFlow] = useState(false);
 
+    const { isAuthenticated } = useSelector((state) => state.auth || {});
+
     const [sendOtp, { isLoading: isSendingOtp }] = useSendOtpMutation();
     const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpMutation();
     const [setPassword, { isLoading: isSettingPassword }] = useSetPasswordMutation();
     const [login, { isLoading: isLoggingIn }] = useLoginMutation();
-    const [syncGuestCart] = useSyncGuestCartMutation();
+
+ const [syncGuestCart] = useSyncGuestCartMutation();
+  const { refetch: refetchCart } = useGetCartItemsQuery(undefined, { skip: !isAuthenticated });
+
+  const { items: guestCart = [], selectedItems: selectedCartItems = [] } = useSelector(
+    (state) => state.cart || {}
+  );
+
 
     const redirectTo = getRedirectPath();
 
@@ -62,7 +72,7 @@ export default function LoginForm() {
             try {
                 await login({ phone, password: data.password }).unwrap();
                 toastSuccess("Login successful!");
-                await syncCartAfterLogin(syncGuestCart);
+               await syncCartAfterLogin(syncGuestCart, refetchCart, guestCart, selectedCartItems);
                 router.back(redirectTo || "/");
             } catch (error) {
                 handleApiError(error);
@@ -84,7 +94,7 @@ export default function LoginForm() {
                         toastSuccess("OTP verified! Please set your password.");
                     } else {
                         toastSuccess("Login successful with OTP!");
-                        await syncCartAfterLogin(syncGuestCart);
+                        await syncCartAfterLogin(syncGuestCart, refetchCart, guestCart, selectedCartItems);
                         router.back(redirectTo || "/");
                     }
                 }
@@ -113,7 +123,7 @@ export default function LoginForm() {
                     setStep("phone");
                 } else {
                     toastSuccess("Password set & login successful!");
-                    await syncCartAfterLogin(syncGuestCart);
+                    await syncCartAfterLogin(syncGuestCart, refetchCart, guestCart, selectedCartItems);
                     router.back(redirectTo || "/");
                 }
             } catch (error) {
