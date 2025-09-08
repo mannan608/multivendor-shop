@@ -65,22 +65,7 @@ const CartPage = () => {
 
   // Select or deselect all items
   const handleSelectAll = async (e) => {
-    if (isAuthenticated) {
-      const updateSelectStatus = apiCartItems.map((item) => ({
-        product_id: item.product_id,
-        product_variation_id: item.product_variation_id || null,
-        action: "select",
-        is_select: e.target.checked,
-      }));
-
-      try {
-        await updateCartItems({ items: updateSelectStatus }).unwrap();
-      } catch (error) {
-        console.error("Error updating selection:", error);
-      }
-    } else {
-      dispatch(toggleAllSelection(e.target.checked)); // For guest users
-    }
+    dispatch(toggleAllSelection(e.target.checked));
   };
   // Delete selected items
   const handleDeleteSelected = () => {
