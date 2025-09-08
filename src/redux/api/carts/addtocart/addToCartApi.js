@@ -33,6 +33,14 @@ export const addToCartApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ["cartitems"]
         }),
+        updateCartItems: builder.mutation({
+            query: (data) => ({
+                url: "/cart",
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["cartitems"]
+        }),
     }),
 });
 
@@ -41,4 +49,5 @@ export const {
     useAddCartItemsMutation,
     useDeleteCartItemsMutation,
     useSyncGuestCartMutation,
+    useUpdateCartItemsMutation,
 } = addToCartApi;

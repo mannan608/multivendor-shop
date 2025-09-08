@@ -35,6 +35,7 @@ export function formatProductData(products = []) {
             badges: product?.badges || [],
             badgeProductVariationsExclude:
                 product?.badgeProductVariationsExclude || [],
+            is_selected: product?.is_selected,
         };
     });
 }
